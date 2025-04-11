@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Russo+One&family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         :root {
             --primary: #0a0a0a;
@@ -872,6 +873,46 @@
                 showCursor: true
             });
 
+            // Easter Egg: Click logo 5 times for confetti and color change
+            let clickCount = 0;
+            let clickTimeout;
+            const logo = document.querySelector('.logo');
+
+            logo.addEventListener('click', function(e) {
+                e.preventDefault(); // Prevent default anchor behavior
+                clickCount++;
+                
+                // Reset count after 2 seconds of inactivity
+                clearTimeout(clickTimeout);
+                clickTimeout = setTimeout(() => {
+                    clickCount = 0;
+                }, 2000);
+
+                if (clickCount >= 15) {
+                    // Trigger confetti
+                    confetti({
+                        particleCount: 100,
+                        spread: 70,
+                        origin: { y: 0.6 },
+                        zIndex: 1000
+                    });
+
+                    // Change accent color to rainbow gradient
+                    document.documentElement.style.setProperty('--accent', 'linear-gradient(45deg, red, orange, yellow, green, blue)');
+                    document.documentElement.style.setProperty('--accent-light', 'linear-gradient(45deg, orange, yellow, green, blue, purple)');
+                    document.documentElement.style.setProperty('--accent-dark', 'linear-gradient(45deg, purple, red, orange, yellow, green)');
+
+                    // Reset colors after 10 seconds
+                    setTimeout(() => {
+                        document.documentElement.style.setProperty('--accent', '#9a1f40');
+                        document.documentElement.style.setProperty('--accent-light', '#c8234a');
+                        document.documentElement.style.setProperty('--accent-dark', '#6e152d');
+                    }, 10000);
+
+                    clickCount = 0; // Reset click count
+                }
+            });
+
             // Анимация при скролле
             const animateOnScroll = () => {
                 const elements = document.querySelectorAll('.section-title, .content-block, .reform-card, .team-member');
@@ -886,7 +927,7 @@
                         el.classList.add('visible');
                         
                         // Добавляем задержку для эффекта последовательного появления
-                        el.style.transitionDelay = `${index * 0.1}s`;
+                        el.style.transitionDelay = `s`;
                     }
                 });
             };
@@ -939,4 +980,3 @@
         });
     </script>
 </body>
-</html>
